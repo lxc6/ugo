@@ -1,5 +1,5 @@
 <template>
-  <view class="index" :style="{overflow:'hidden',height:h}">
+  <view class="index" :style="{ overflow: 'hidden', height: h }">
     <!-- 搜索模块 -->
     <search @my="getHeight"></search>
     <!-- 轮播图模块 -->
@@ -11,7 +11,8 @@
         indicator-color="rgba(0, 0, 0, .5)"
       >
         <swiper-item v-for="item in swiperlist" :key="item.goods_id">
-          <navigator url="#">
+          <!-- 跳转详情页 -->
+          <navigator :url="'/pages/goods/index?id='+item.goods_id">
             <image :src="item.image_src" />
           </navigator>
         </swiper-item>
@@ -21,7 +22,7 @@
     <view class="navs">
       <view class="nav_cell" v-for="item in navlist" :key="item.name">
         <!-- 跳转tabbar页面，必须设置open-type="switchTab" -->
-        <navigator url="../category/index" open-type="switchTab">
+        <navigator url="/pages/category/index" open-type="switchTab">
           <image :src="item.image_src" />
         </navigator>
       </view>
@@ -29,7 +30,7 @@
     <!-- 楼层模块 -->
     <view class="box">
       <!-- 时尚女装 -->
-      <view class="f" v-for="(item,index) in floorlist" :key="index">
+      <view class="f" v-for="(item, index) in floorlist" :key="index">
         <view class="bg">
           <image :src="item.floor_title.image_src" />
         </view>
@@ -37,8 +38,8 @@
         <view class="floor">
           <navigator
             class="nav"
-            :class="'nav'+(index+1)"
-            v-for="(sub,index) in item.product_list"
+            :class="'nav' + (index + 1)"
+            v-for="(sub, index) in item.product_list"
             :key="sub.name"
             url="#"
           >
@@ -47,6 +48,8 @@
         </view>
       </view>
     </view>
+    <!-- 回到顶部 -->
+    <view class="goTop icon-top" @click="goTop" v-if="scrollTop > 300"></view>
   </view>
 </template>
 
@@ -61,15 +64,22 @@ export default {
       h: "auto",
       swiperlist: [],
       navlist: [],
-      floorlist: []
+      floorlist: [],
+      scrollTop: 0
     };
   },
   onLoad() {
-    this.getSwiper();//轮播
-    this.getNavs();//导航
-    this.getFloors();//楼层
+    this.getSwiper(); //轮播
+    this.getNavs(); //导航
+    this.getFloors(); //楼层
   },
   methods: {
+    // 回到顶部
+    goTop() {
+      uni.pageScrollTo({
+        scrollTop: 0 // 回到 0就是顶部
+      });
+    },
     // 接收子组件数据修改可视高度
     getHeight(height) {
       this.h = height;
@@ -93,11 +103,19 @@ export default {
       this.floorlist = result.message;
     }
   },
+  // 下拉刷新
   onPullDownRefresh() {
     console.log("开启下拉刷新,并重新发送请求渲染页面");
     this.getSwiper();
     this.getNavs();
     this.getFloors();
+    // 等待请求完毕 应该 立刻关闭下拉效果
+    uni.stopPullDownRefresh();
+  },
+  // 监听页面滚动
+  onPageScroll(obj) {
+    // console.log("页面滚动了", obj);
+    this.scrollTop = obj.scrollTop;
   }
 };
 </script>
@@ -178,5 +196,20 @@ export default {
       }
     }
   }
+}
+// 返回顶部
+.goTop {
+  position: fixed;
+  bottom: 30rpx;
+  right: 30rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100rpx;
+  height: 100rpx;
+  font-size: 48rpx;
+  color: #666;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 </style>

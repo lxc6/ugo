@@ -22,8 +22,33 @@
 		{
 			"path": "pages/user/index",
 			"style": {
+				"navigationBarBackgroundColor": "#9ACD32",
 				"navigationBarTitleText": "用户"
 			}
+		},
+		{
+			"path": "pages/goods/index",
+			"style": {
+				"navigationBarBackgroundColor": "#ea4451",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "商品详情"
+			}
+
+		},
+		{
+			"path": "pages/list/index",
+			"style": {
+				"navigationBarTitleText": "商品列表",
+				"onReachBottomDistance":50, //距离底部50px时执行上拉加载
+				"enablePullDownRefresh":true //开启下拉刷新
+			}
+			
+		},
+		{
+			"path": "pages/order/index"
+		},
+		{
+			"path": "pages/auth/index"
 		}
 	],
 	"globalStyle": {
